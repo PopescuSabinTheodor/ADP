@@ -1,6 +1,3 @@
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-
 public class MyQueue
 {
     private static MyQueue instance = new MyQueue();
