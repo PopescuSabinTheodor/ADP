@@ -1,7 +1,12 @@
+import java.util.concurrent.Semaphore;
+
 public class MyQueue
 {
     private static MyQueue instance = new MyQueue();
     private static final int SIZE = 10;
+    private Semaphore notFull = new Semaphore(SIZE);
+    private Semaphore notEmpty = new Semaphore(0);
+
 
     private static int occupied;
 
@@ -22,22 +27,29 @@ public class MyQueue
         return instance;
     }
 
-    public synchronized void receiveItem()
+    public void receiveItem()
     {
-        if(occupied < SIZE)
-        {
-            occupied++;
-            System.out.println("Storing item...   Queue size is: " + occupied);
-
+        try {
+            notFull.acquire();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
+        occupied++;
+        System.out.println("Storing item...   Queue size is: " + occupied);
+        notEmpty.release();
+
     }
 
-    public synchronized void presentItem()
-    {   if(occupied > 0)
-        {
-            occupied--;
-            System.out.println("Giving item...   Queue size is: " + occupied);
+    public void presentItem()
+    {
+        try {
+            notEmpty.acquire();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
+        occupied--;
+        System.out.println("Giving item...   Queue size is: " + occupied);
+        notFull.release();
 
     }
 
