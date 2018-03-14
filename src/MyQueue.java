@@ -1,9 +1,11 @@
-
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class MyQueue
 {
     private static MyQueue instance = new MyQueue();
     private static final int SIZE = 10;
+
     private static int occupied;
 
 
@@ -29,19 +31,7 @@ public class MyQueue
         {
             occupied++;
             System.out.println("Storing item...   Queue size is: " + occupied);
-            notify();
-        }else
-        {
-            try
-            {
-                wait();
-            } catch (InterruptedException e)
-            {
-                e.printStackTrace();
-            }
-            occupied++;
-            System.out.println("Storing item...   Queue size is: " + occupied);
-            notify();
+
         }
     }
 
@@ -50,23 +40,8 @@ public class MyQueue
         {
             occupied--;
             System.out.println("Giving item...   Queue size is: " + occupied);
-            notify();
-        }else
-        {
-            try
-            {
-                wait();
-            } catch (InterruptedException e)
-            {
-                e.printStackTrace();
-            }
-            occupied--;
-            System.out.println("Giving item...   Queue size is: " + occupied);
-            notify();
         }
 
     }
-
-
 
 }
