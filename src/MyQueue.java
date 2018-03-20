@@ -1,4 +1,6 @@
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class MyQueue
 {
@@ -6,6 +8,7 @@ public class MyQueue
     private static final int SIZE = 10;
     private Semaphore notFull = new Semaphore(SIZE);
     private Semaphore notEmpty = new Semaphore(0);
+    private Lock mutex = new ReentrantLock();
 
 
     private static int occupied;
@@ -34,7 +37,9 @@ public class MyQueue
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        mutex.lock();
         occupied++;
+        mutex.unlock();
         System.out.println("Storing item...   Queue size is: " + occupied);
         notEmpty.release();
 
@@ -47,7 +52,9 @@ public class MyQueue
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        mutex.lock();
         occupied--;
+        mutex.unlock();
         System.out.println("Giving item...   Queue size is: " + occupied);
         notFull.release();
 
