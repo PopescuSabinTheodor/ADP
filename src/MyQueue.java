@@ -1,4 +1,4 @@
-import java.util.concurrent.Semaphore;
+import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -6,9 +6,11 @@ public class MyQueue
 {
     private static MyQueue instance = new MyQueue();
     private static final int SIZE = 10;
-    private Semaphore notFull = new Semaphore(SIZE);
-    private Semaphore notEmpty = new Semaphore(0);
     private Lock mutex = new ReentrantLock();
+    private Condition notFull = mutex.newCondition();
+    private Condition notEmpty = mutex.newCondition();
+
+
 
 
     private static int occupied;
@@ -32,32 +34,42 @@ public class MyQueue
 
     public void receiveItem()
     {
-        try {
-            notFull.acquire();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         mutex.lock();
-        occupied++;
-        mutex.unlock();
-        System.out.println("Storing item...   Queue size is: " + occupied);
-        notEmpty.release();
+        try {
+            while (occupied == SIZE) {
+                try {
+                    notFull.await();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            occupied++;
+            notEmpty.signalAll();
+            System.out.println("Storing item...   Queue size is: " + occupied);
+        }finally {
+            mutex.unlock();
+        }
+
 
     }
 
     public void presentItem()
     {
-        try {
-            notEmpty.acquire();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         mutex.lock();
-        occupied--;
-        mutex.unlock();
-        System.out.println("Giving item...   Queue size is: " + occupied);
-        notFull.release();
-
+        try {
+            while (occupied == 0) {
+                try {
+                    notEmpty.await();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            occupied--;
+            notFull.signalAll();
+            System.out.println("Giving item...   Queue size is: " + occupied);
+        }finally {
+            mutex.unlock();
+        }
     }
 
 }
