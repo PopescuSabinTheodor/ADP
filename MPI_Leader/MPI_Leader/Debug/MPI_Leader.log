@@ -1,0 +1,4 @@
+﻿  MPI_Leader.cpp
+c:\users\sabin theodor\documents\visual studio 2017\projects\mpi_leader\mpi_leader\mpi_leader.cpp(23): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+c:\users\sabin theodor\documents\visual studio 2017\projects\mpi_leader\mpi_leader\mpi_leader.cpp(38): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+  MPI_Leader.vcxproj -> C:\Users\Sabin Theodor\Documents\Visual Studio 2017\Projects\MPI_Leader\Debug\MPI_Leader.exe
